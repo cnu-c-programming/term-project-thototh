@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
     }
 
 #else
-#error "Define either -DADMIN_MODE or -DCLIENT_MODE when compiling."
+//#error "Define either -DADMIN_MODE or -DCLIENT_MODE when compiling."
 #endif
 
     return 0;
