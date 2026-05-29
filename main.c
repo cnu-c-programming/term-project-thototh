@@ -19,9 +19,10 @@
 #include <string.h>
 
 /* TODO: Add your own header includes here */
-/* #include "student.h"  */
-/* #include "file_io.h"  */
-/* #include "command.h"  */
+#include "student.h"
+#include "file_io.h"
+#include "command.h"
+
 
 /* ---------------------------------------------------------------
  * TODO: Implement the interactive shell loop.
