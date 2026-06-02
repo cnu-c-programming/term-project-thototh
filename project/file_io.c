@@ -9,7 +9,6 @@ Student* load_students(const char* filename){
     FILE* fp = fopen(filename, "r");
 
     if(fp == NULL){
-        printf("Error: cannot open file\n");
         return NULL;
     }
 
@@ -40,7 +39,6 @@ int save_students(const char* filename, Student* head){
     FILE* fp = fopen(filename, "w");
 
     if(fp == NULL){
-        printf("Error: cannot open file\n");
         return 0;
     }
 
@@ -48,11 +46,13 @@ int save_students(const char* filename, Student* head){
 
     //구조체에 있는 학생들을 저장
     Student* cur = head;
+    int count = 0;
     while(cur != NULL){
-        fprintf(fp, "%d,%s,%d", cur->id, cur->name, cur->score);
+        fprintf(fp, "%d,%s,%d\n", cur->id, cur->name, cur->score);
         cur = cur->next;
+        count++;
     }
 
     fclose(fp);
-    return 1;
+    return count;
 }
