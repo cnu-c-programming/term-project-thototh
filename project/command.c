@@ -44,12 +44,13 @@ int get_cmd_count(){
 ShellResult handle_save(char* args, Student** head){
     (void)args;
     
-    Student* cur = head;
-    if(save_students("students.csv", cur)==0){
+    Student* cur = *head;
+    int count  = save_students("studendts.csv", cur);
+
+    if(count==0){
         printf("No student file");
         return SHELL_ERR_INVALID_ARGUMENT;
     }else{
-        int count  = save_students("studendts.csv", cur);
         printf("Saved %d students to students.csv.", count);
         return SHELL_OK;
     }
@@ -64,8 +65,9 @@ ShellResult handle_reload(char* args, Student** head){
         printf("No students argument");
         return SHELL_ERR_INVALID_ARGUMENT;
     }else{
-        head = load_students("students.csv");
-        Student* cur = head;
+        free_students(*head);
+        *head = load_students("students.csv");
+        Student* cur = *head;
 
         int count = 0;
         while(cur != NULL){
@@ -106,36 +108,115 @@ ShellResult handle_add(char* args, Student** head){
 
 //ID기준으로 학생정보를 삭제한다.
 ShellResult handle_delete(char* args, Student** head){
-    (void)args;
-    (void)head;
-    return SHELL_OK;
+    int id;
+
+    if(!args || sscanf(args, "%d", &id) != 1){
+        printf("Error: invalid argument\n");
+        return SHELL_ERR_INVALID_ARGUMENT;
+    }
+
+    if(delete_student(head, id)){
+        printf("Student deleted.\n");
+        return SHELL_OK;
+    }
+    printf("Error: student not found.\n");
+    return SHELL_ERR_STUDENT_NOT_FOUND;
+    
 }
 
 //ID를 기준으로 학생의 점수를 수정한다.
 ShellResult handle_update(char* args, Student** head){
-    (void)args;
-    (void)head;
+    int id; 
+    int score;
+
+    if(!args || sscanf(args, "%d %d", &id, &score) != 2){
+        printf("Error: invalid argument\n");
+        return SHELL_ERR_INVALID_ARGUMENT;
+    }
+
+    if(score < 0 || score > 100){
+        printf("Error: invalid score\n");
+        return SHELL_ERR_INVALID_SCORE;
+    }
+
+    Student* s = find_student(*head, id);
+    if(s == NULL){
+        printf("Error: student not found\n");
+        return SHELL_ERR_STUDENT_NOT_FOUND;
+    }
+
+    s->score = score;
+    printf("Student updated.\n");
     return SHELL_OK;
 }
 
 //ID를 기준으로 학생정보를 검색한다.
 ShellResult handle_find(char* args, Student** head){
-    (void)args;
-    (void)head;
+    int id;
+
+    if(!args || sscanf(args, "%d", &id) != 1){
+        printf("Error: invalid argument\n");
+        return SHELL_ERR_INVALID_ARGUMENT;
+    }
+
+    Student* s = find_student(*head, id);
+
+    if(s == NULL){
+        printf("Error: student not found\n");
+        return SHELL_ERR_STUDENT_NOT_FOUND;
+    }
+
+    printf("ID: %d\n", s->id);
+    printf("Name: %s\n", s->name);
+    printf("Score: %d\n", s->score);
+
     return SHELL_OK;
 }
 
 //linked list에 저장된 모든 학생을 출력한다.
 ShellResult handle_list(char* args, Student** head){
     (void)args;
-    (void)head;
+    
+    if(*head == NULL){
+        printf("No students found.\n");
+        return SHELL_OK;
+    }
+
+    Student* cur = *head;
+    printf("ID    Name    Score\n");
+
+    while(cur != NULL){
+        printf("%-4d %-4s %-4d\n", cur->id, cur->name, cur->score);
+        cur = cur->next;
+    }
     return SHELL_OK;
 }
 
 //간단한 통계를 출력한다.
 ShellResult handle_stats(char* args, Student** head){
     (void)args;
-    (void)head;
+    int sum = 0;
+    int count = 0;
+    int max = -1;
+    int min = 101;
+
+    if(*head == NULL){
+        printf("No students data available.\n");
+        return SHELL_OK;
+    }
+
+    Student* cur = *head;
+    while (cur != NULL){
+        sum += cur->score;
+
+        if(max < cur->score) max = cur->score;
+
+        if(min > cur->score) min = cur->score;
+
+        cur = cur->next;
+        count++;
+    }
+    printf("Count: %d\nAverage: %.1f\nMax: %d\nMin: %d\n", count, (double)sum/count, max, min);
     return SHELL_OK;
 }
 
