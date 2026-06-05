@@ -28,6 +28,9 @@ typedef struct {
 extern Command commands[];
 int get_cmd_count(void);
 
+extern char csvName[256];
+void reset_csvName(const char* name);
+
 ShellResult handle_save(char* args, Student** head);
 ShellResult handle_reload(char* args, Student** head);
 

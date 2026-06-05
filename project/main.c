@@ -35,10 +35,13 @@ void run_shell(const char *csv_path) {
     /* TODO */
     #ifdef ADMIN_MODE
         printf("[Admin Program]\n");
-    #else
+    #elif defined(CLIENT_MODE)
         printf("[Client Program]\n");
+    #else 
+        printf("Usage");
     #endif
     Student* head = load_students(csv_path);
+    reset_csvName(csv_path);
     printf("Loaded %d students from %s.\n\n", num_students(head), csv_path);
     char line[256];
 
@@ -74,7 +77,7 @@ void run_shell(const char *csv_path) {
             }
         }
         if(found != 1){
-            printf("Error: unknown command\n");
+            printf("Error: Unknown command or permission denied.\n");
         }
     }
     free_students(head);
@@ -90,8 +93,10 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
     /* TODO */ 
     #ifdef ADMIN_MODE
         printf("[Admin Program]\n");
-    #else
+    #elif defined(CLIENT_MODE)
         printf("[Client Program]\n");
+    #else
+        printf("Usage");
     #endif
     FILE* fp = fopen(cmd_file, "r");
 
@@ -102,6 +107,7 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
     }
 
     Student* head = load_students(csv_path);
+    reset_csvName(csv_path);
     printf("Loaded %d students from %s.\n\n", num_students(head), csv_path);
     char line[256];
     char index[256];
@@ -120,7 +126,7 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
         int found = 0;
         for(int i = 0; i < get_cmd_count(); i++){
             if(strcmp(cmd, commands[i].name) == 0){
-                printf("[Command file: %d] %s\n", fileCount, index);
+                printf("[command file:%d] %s\n", fileCount, index);
                 ShellResult result = commands[i].handler(args, &head);
                 found = 1;
 
@@ -134,7 +140,7 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
             }
         }
         if(found != 1){
-            printf("[Command file: %d]\nError: unknown command", fileCount);
+            printf("[command file:%d]\nError: unknown command", fileCount);
             printf("Skipped line %d\n", fileCount);
         }
         fileCount++;
@@ -167,14 +173,14 @@ int main(int argc, char *argv[]) {
         if(strcmp(argv[i], "-f") == 0 && i + 1 < argc){
             cmd_file = argv[++i];
         }else{
-        csv_path = argv[i];
+        csv_path = argv[i]; //주어진 csv 파일
         }
     }
 
     if(csv_path == NULL){
         #ifdef ADMIN_MODE
             printf("Usage: ./admin_shell <csv_file> [-f command_file]\n");
-        #else
+        #elif defined(CLIENT_MODE)
             printf("Usage: ./client_shell <csv_file> [-f command_file]\n");
         #endif
     }

@@ -47,18 +47,23 @@ int get_cmd_count(){
     #endif
 }
 
+char csvName[256] = "students.csv";
+void reset_csvName(const char* name){
+    strcpy(csvName, name);
+}
+
 //현재 linked list에 저장된 학생정보를 원래 CSV파일에 저장한다.
 ShellResult handle_save(char* args, Student** head){
     (void)args;
     
     Student* cur = *head;
-    int count  = save_students("students.csv", cur);
+    int count  = save_students(csvName, cur);
 
     if(count<0){
         printf("No student file\n");
         return SHELL_ERR_INVALID_ARGUMENT;
     }else{
-        printf("Saved %d students to students.csv.\n", count);
+        printf("Saved %d students to %s.\n", count, csvName);
         return SHELL_OK;
     }
 
@@ -67,13 +72,13 @@ ShellResult handle_save(char* args, Student** head){
 //원래 CSV파일에서 학생정보를 다시 불러온다.
 ShellResult handle_reload(char* args, Student** head){
     (void)args;
-    
-    if(load_students("students.csv")==NULL){
+
+    if(load_students(csvName)==NULL){
         printf("No students argument\n");
         return SHELL_ERR_INVALID_ARGUMENT;
     }else{
         free_students(*head);
-        *head = load_students("students.csv");
+        *head = load_students(csvName);
         Student* cur = *head;
 
         int count = 0;
@@ -82,7 +87,7 @@ ShellResult handle_reload(char* args, Student** head){
             count++;
         }
     
-        printf("Reloaded %d students from students.csv.\n", count);
+        printf("Reloaded %d students from %s.\n", count, csvName);
         return SHELL_OK;
     }
 }
@@ -107,7 +112,7 @@ ShellResult handle_add(char* args, Student** head){
         return SHELL_ERR_DUPLICATE_STUDENT;
     }
 
-    if(id < 0){
+    if(id <= 0){
         printf("Error: invalid ID\n");
         return SHELL_ERR_INVALID_ARGUMENT;
     }
@@ -213,7 +218,7 @@ ShellResult handle_stats(char* args, Student** head){
     int min = 101;
 
     if(*head == NULL){
-        printf("No students data available.\n");
+        printf("No student data available.\n");
         return SHELL_OK;
     }
 
