@@ -61,9 +61,9 @@ void run_shell(const char *csv_path) {
         int found = 0;
 
         for(int i = 0; i < get_cmd_count(); i++){
-            if(strcmp(cmd, commands[i].name) == 0){
+            if(strcmp(cmd, commands[i].name) == 0){//명령어 비교
                 ShellResult result = commands[i].handler(args, &head);
-                found = 1;
+                found = 1;//커맨드 수행 확인
 
                 if(result == SHELL_EXIT){
                     free_students(head);
@@ -88,6 +88,11 @@ void run_shell(const char *csv_path) {
  * --------------------------------------------------------------- */
 void run_command_file(const char *cmd_file, const char *csv_path) {
     /* TODO */ 
+    #ifdef ADMIN_MODE
+        printf("[Admin Program]\n");
+    #else
+        printf("[Client Program]\n");
+    #endif
     FILE* fp = fopen(cmd_file, "r");
 
     //비어있는지 확인
@@ -97,6 +102,7 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
     }
 
     Student* head = load_students(csv_path);
+    printf("Loaded %d students from %s.\n\n", num_students(head), csv_path);
     char line[256];
     char index[256];
     int fileCount = 1;
