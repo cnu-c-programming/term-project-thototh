@@ -82,6 +82,46 @@ void run_shell(const char *csv_path) {
  * --------------------------------------------------------------- */
 void run_command_file(const char *cmd_file, const char *csv_path) {
     /* TODO */ 
+    FILE* fp = fopen(cmd_file, "r");
+
+    if(fp == NULL){
+        printf("Error: cannot open command file\n");
+        return;
+    }
+
+    Student* head = load_students(csv_path);
+    char* line[256];
+
+    while(fgets(line, sizeof(line), fp)){
+        line[strcspn(line, "\n")] = '\0';
+
+        if(strlen(line) == 0) continue;
+
+        char* cmd = strtok(line, " ");
+        char* args = strtok(NULL, "");
+
+        int found = 0;
+
+        for(int i = 0; i < get_cmd_count(); i++){
+            if(strcmp(cmd, commands[i].name) == 0){
+                ShellResult result = commands[i].handler(args, &head);
+                found = 1;
+
+                if(result == SHELL_EXIT){
+                    free_students(head);
+                    fclose(fp);
+                    return;
+                }
+
+                break;;
+            }
+        }
+        if(found != 1){
+            printf("Error: unknown command\n");
+        }
+    }
+    free_students(head);
+    fclose(fp);
 }
 
 int main(int argc, char *argv[]) {
