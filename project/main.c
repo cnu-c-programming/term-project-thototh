@@ -33,7 +33,13 @@
  * --------------------------------------------------------------- */
 void run_shell(const char *csv_path) {
     /* TODO */
+    #ifdef ADMIN_MODE
+        printf("[Admin Program]\n");
+    #else
+        printf("[Client Program]\n");
+    #endif
     Student* head = load_students(csv_path);
+    printf("Loaded %d students from %s.\n\n", num_students(head), csv_path);
     char line[256];
 
     while(1){
@@ -84,6 +90,7 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
     /* TODO */ 
     FILE* fp = fopen(cmd_file, "r");
 
+    //비어있는지 확인
     if(fp == NULL){
         printf("Error: cannot open command file\n");
         return;
@@ -91,19 +98,23 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
 
     Student* head = load_students(csv_path);
     char line[256];
+    char index[256];
+    int fileCount = 1;
 
     while(fgets(line, sizeof(line), fp)){
+        
         line[strcspn(line, "\n")] = '\0';
-
-        if(strlen(line) == 0) continue;
+        strcpy(index, line); //출력용으로 복사
+        if(strlen(line) == 0) continue; //빈줄 무시
 
         char* cmd = strtok(line, " ");
         char* args = strtok(NULL, "");
+        if(cmd[0] == '#') continue; //#으로 시작하면 주석으로 처리
 
         int found = 0;
-
         for(int i = 0; i < get_cmd_count(); i++){
             if(strcmp(cmd, commands[i].name) == 0){
+                printf("[Command file: %d] %s\n", fileCount, index);
                 ShellResult result = commands[i].handler(args, &head);
                 found = 1;
 
@@ -117,8 +128,11 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
             }
         }
         if(found != 1){
-            printf("Error: unknown command\n");
+            printf("[Command file: %d]\nError: unknown command", fileCount);
+            printf("Skipped line %d\n", fileCount);
         }
+        fileCount++;
+        printf("\n");
     }
     free_students(head);
     fclose(fp);
@@ -149,6 +163,14 @@ int main(int argc, char *argv[]) {
         }else{
         csv_path = argv[i];
         }
+    }
+
+    if(csv_path == NULL){
+        #ifdef ADMIN_MODE
+            printf("Usage: ./admin_shell <csv_file> [-f command_file]\n");
+        #else
+            printf("Usage: ./client_shell <csv_file> [-f command_file]\n");
+        #endif
     }
 
 #ifdef ADMIN_MODE

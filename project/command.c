@@ -195,7 +195,7 @@ ShellResult handle_list(char* args, Student** head){
     }
 
     Student* cur = *head;
-    printf("ID    Name    Score\n");
+    printf("ID       Name     Score\n");
 
     while(cur != NULL){
         printf("%-8d %-8s %-8d\n", cur->id, cur->name, cur->score);
