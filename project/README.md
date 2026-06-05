@@ -73,15 +73,25 @@ exit
 ## 파일 구조
 
 ```
-student/
-├── main.c       - 프로그램 진입점 (구현 필요)
-├── Makefile     - 빌드 자동화
-├── grader.py    - 제출 전 기능 확인용 채점 스크립트
-├── grader.md    - grader 사용법
-└── expected/    - 채점 기준 CSV 파일 모음
-```
+term-project
+├── grader.bat
+├── grader.md
+├── grader.ps1
+├── grader.py
+├── grader.sh
+└── project
+    ├── command.c
+    ├── command.h
+    ├── file_io.c
+    ├── file_io.h
+    ├── main.c
+    ├── Makefile
+    ├── README.md
+    ├── student.c
+    ├── student.h
+    └── students.csv
 
-> 자세한 과제 명세는 배포된 `term_project_description.docx` 를 참고하세요.
+```
 
 ## 제출 전 기능 확인
 
@@ -96,4 +106,4 @@ grader.bat admin_shell.exe client_shell.exe students.csv
 .\grader.ps1 admin_shell.exe client_shell.exe students.csv
 ```
 
-> 최종 채점에 사용하는 test case는 변경될 수 있습니다.
+
