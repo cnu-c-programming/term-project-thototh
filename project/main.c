@@ -33,7 +33,45 @@
  * --------------------------------------------------------------- */
 void run_shell(const char *csv_path) {
     /* TODO */
-    (void)csv_path;
+    Student* head = load_students(csv_path);
+    char line[256];
+
+    while(1){
+        #ifdef ADMIN_MODE
+            printf("admin> ");
+        #else
+            printf("client> ");
+        #endif
+
+        if(fgets(line, sizeof(line), stdin) == NULL) break;
+
+        line[strcspn(line, "\n")] = '\0';
+
+        if(strlen(line) == 0) continue;
+
+        char* cmd = strtok(line, " ");
+        char* args = strtok(NULL, "");
+
+        int found = 0;
+
+        for(int i = 0; i < get_cmd_count(); i++){
+            if(strcmp(cmd, commands[i].name) == 0){
+                ShellResult result = commands[i].handler(args, &head);
+                found = 1;
+
+                if(result == SHELL_EXIT){
+                    free_students(head);
+                    return;
+                }
+
+                break;;
+            }
+        }
+        if(found != 1){
+            printf("Error: unknown command\n");
+        }
+    }
+    free_students(head);
 }
 
 /* ---------------------------------------------------------------
@@ -43,9 +81,7 @@ void run_shell(const char *csv_path) {
  *   - Close the file when done.
  * --------------------------------------------------------------- */
 void run_command_file(const char *cmd_file, const char *csv_path) {
-    /* TODO */
-    (void)cmd_file;
-    (void)csv_path;
+    /* TODO */ 
 }
 
 int main(int argc, char *argv[]) {

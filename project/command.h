@@ -26,6 +26,7 @@ typedef struct {
     const char* description;
 }Command;
 extern Command commands[];
+int get_cmd_count(void);
 
 ShellResult handle_save(char* args, Student** head);
 ShellResult handle_reload(char* args, Student** head);

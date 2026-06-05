@@ -6,6 +6,7 @@
 #include "command.h"
 #include "file_io.h"
 #include "student.h"
+#define CLIENT_MODE//////////////오류나서 임시로 추가-나중에 꼭 지우기!!!!!!!!!!
 
 //command: name handler usage description
 #ifdef ADMIN_MODE
@@ -21,6 +22,8 @@ Command commands[] = {
     {"help",   handle_help,   "help",                    "Show help"},
     {"clear",  handle_clear,  "clear",                   "Clear screen"},
     {"exit",   handle_exit,   "exit",                    "Exit shell"}
+
+
 };
 #endif
 
@@ -33,6 +36,7 @@ Command commands[] = {
     {"help",   handle_help,   "help",        "Show help"},
     {"clear",  handle_clear,  "clear",       "Clear screen"},
     {"exit",   handle_exit,   "exit",        "Exit shell"}
+
 };
 #endif
 
@@ -45,13 +49,13 @@ ShellResult handle_save(char* args, Student** head){
     (void)args;
     
     Student* cur = *head;
-    int count  = save_students("studendts.csv", cur);
+    int count  = save_students("students.csv", cur);
 
-    if(count==0){
-        printf("No student file");
+    if(count<0){
+        printf("No student file\n");
         return SHELL_ERR_INVALID_ARGUMENT;
     }else{
-        printf("Saved %d students to students.csv.", count);
+        printf("Saved %d students to students.csv.\n", count);
         return SHELL_OK;
     }
 
@@ -62,7 +66,7 @@ ShellResult handle_reload(char* args, Student** head){
     (void)args;
     
     if(load_students("students.csv")==NULL){
-        printf("No students argument");
+        printf("No students argument\n");
         return SHELL_ERR_INVALID_ARGUMENT;
     }else{
         free_students(*head);
@@ -75,7 +79,7 @@ ShellResult handle_reload(char* args, Student** head){
             count++;
         }
     
-        printf("Reloaded %d students from students.csv.", count);
+        printf("Reloaded %d students from students.csv.\n", count);
         return SHELL_OK;
     }
 }
@@ -98,6 +102,11 @@ ShellResult handle_add(char* args, Student** head){
     if(find_student(*head, id)){
         printf("Error: duplicated ID\n");
         return SHELL_ERR_DUPLICATE_STUDENT;
+    }
+
+    if(id < 0){
+        printf("Error: invalid ID\n");
+        return SHELL_ERR_INVALID_ARGUMENT;
     }
 
     Student* newST = create_student(id, name, score);
@@ -186,7 +195,7 @@ ShellResult handle_list(char* args, Student** head){
     printf("ID    Name    Score\n");
 
     while(cur != NULL){
-        printf("%-4d %-4s %-4d\n", cur->id, cur->name, cur->score);
+        printf("%-8d %-8s %-8d\n", cur->id, cur->name, cur->score);
         cur = cur->next;
     }
     return SHELL_OK;
