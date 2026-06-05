@@ -90,7 +90,7 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
     }
 
     Student* head = load_students(csv_path);
-    char* line[256];
+    char line[256];
 
     while(fgets(line, sizeof(line), fp)){
         line[strcspn(line, "\n")] = '\0';
@@ -143,8 +143,13 @@ int main(int argc, char *argv[]) {
      *       }
      *   }
      */
-    (void)argc;
-    (void)argv;
+    for(int i = 1; i < argc; i++){
+        if(strcmp(argv[i], "-f") == 0 && i + 1 < argc){
+            cmd_file = argv[++i];
+        }else{
+        csv_path = argv[i];
+        }
+    }
 
 #ifdef ADMIN_MODE
     /* Admin shell: supports add, delete, update, save, load, sort, list, find, help, exit */

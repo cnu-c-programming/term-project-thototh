@@ -6,7 +6,6 @@
 #include "command.h"
 #include "file_io.h"
 #include "student.h"
-#define CLIENT_MODE//////////////오류나서 임시로 추가-나중에 꼭 지우기!!!!!!!!!!
 
 //command: name handler usage description
 #ifdef ADMIN_MODE
@@ -41,7 +40,11 @@ Command commands[] = {
 #endif
 
 int get_cmd_count(){
-    return sizeof(commands) / sizeof(commands[0]);
+    #ifdef ADMIN_MODE
+        return 11;
+    #else
+        return 7;
+    #endif
 }
 
 //현재 linked list에 저장된 학생정보를 원래 CSV파일에 저장한다.
