@@ -1,0 +1,7 @@
+list
+help
+add 7 park 55
+save
+stats
+delete 7
+exit
