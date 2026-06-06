@@ -23,4 +23,7 @@ int delete_student(Student** head, int id);
 
 //전부 없애기
 void free_students(Student* head);
+
+//학생 수 
+int num_students(Student* head);
 #endif

@@ -84,3 +84,14 @@ void free_students(Student* head){
         free(temp);
     }
 }
+
+int num_students(Student* head){
+    Student* cur = head;
+    int count = 0;
+
+    while (cur != NULL){
+        count++;
+        cur = cur->next;
+    }
+    return count;
+}
