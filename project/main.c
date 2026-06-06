@@ -35,7 +35,7 @@ void run_shell(const char *csv_path) {
     /* TODO */
     #ifdef ADMIN_MODE
         printf("[Admin Program]\n");
-    #elif defined(CLIENT_MODE)
+    #elif CLIENT_MODE
         printf("[Client Program]\n");
     #else 
         printf("Usage");
@@ -93,7 +93,7 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
     /* TODO */ 
     #ifdef ADMIN_MODE
         printf("[Admin Program]\n");
-    #elif defined(CLIENT_MODE)
+    #elif CLIENT_MODE
         printf("[Client Program]\n");
     #else
         printf("Usage");
