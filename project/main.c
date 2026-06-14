@@ -119,25 +119,24 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
         char* args = strtok(NULL, "");
         if(cmd[0] == '#') continue; //#으로 시작하면 주석으로 처리
 
-        int found = 0;
         for(int i = 0; i < get_cmd_count(); i++){
             if(strcmp(cmd, commands[i].name) == 0){
-                printf("[command file:%d] %s\n", fileCount, index);
                 ShellResult result = commands[i].handler(args, &head);
-                found = 1;
 
                 if(result == SHELL_EXIT){
                     free_students(head);
                     fclose(fp);
                     return;
+                }else if(result == SHELL_OK){
+                    printf("[command file:%d] %s\n", fileCount, index);
+                    break;
+                }else{
+                    printf("Skipped line %d", fileCount);
+                    break;
                 }
 
                 break;;
             }
-        }
-        if(found != 1){
-            printf("[command file:%d]\nError: unknown command", fileCount);
-            printf("Skipped line %d\n", fileCount);
         }
         fileCount++;
         printf("\n");
