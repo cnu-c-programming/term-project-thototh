@@ -37,8 +37,6 @@ void run_shell(const char *csv_path) {
         printf("[Admin Program]\n");
     #elif CLIENT_MODE
         printf("[Client Program]\n");
-    #else 
-        printf("Usage");
     #endif
     Student* head = load_students(csv_path);
     reset_csvName(csv_path);
@@ -95,8 +93,6 @@ void run_command_file(const char *cmd_file, const char *csv_path) {
         printf("[Admin Program]\n");
     #elif CLIENT_MODE
         printf("[Client Program]\n");
-    #else
-        printf("Usage");
     #endif
     FILE* fp = fopen(cmd_file, "r");
 
@@ -169,6 +165,13 @@ int main(int argc, char *argv[]) {
      *       }
      *   }
      */
+
+    //입력 인자 없을 경우 Usage출력
+    if(argc < 2){
+        printf("Usage");
+        return 1;
+    }
+
     for(int i = 1; i < argc; i++){
         if(strcmp(argv[i], "-f") == 0 && i + 1 < argc){
             cmd_file = argv[++i];
@@ -193,7 +196,7 @@ int main(int argc, char *argv[]) {
         run_shell(csv_path);
     }
 
-#elif defined(CLIENT_MODE)
+#elif CLIENT_MODE
     /* Client shell: supports find, list, help, exit  (read-only) */
     if (cmd_file) {
         run_command_file(cmd_file, csv_path);
